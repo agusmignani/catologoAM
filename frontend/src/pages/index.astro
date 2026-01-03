@@ -1,0 +1,61 @@
+---
+import Layout from "../layouts/Layout.astro";
+import ProductCard from "../components/ProductCard.astro";
+
+const res = await fetch("http://127.0.0.1:8000/products");
+const products = await res.json();
+---
+
+<Layout>
+
+  <!-- HEADER -->
+  <header class="border-b border-neutral-800">
+    <div class="max-w-7xl mx-auto px-6 h-24 flex items-center gap-4">
+      <div class="w-12 h-12 rounded-full bg-rose-300 flex items-center justify-center">
+        <span class="text-neutral-950 font-semibold">AM</span>
+      </div>
+
+      <div>
+        <h1 class="text-lg font-medium tracking-wide">Catálogo AM</h1>
+        <p class="text-xs text-neutral-400">Maquillaje original</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="py-24 text-center px-6">
+    <h2 class="text-4xl font-light tracking-wide">
+      Belleza auténtica
+    </h2>
+    <p class="text-neutral-400 mt-2">
+      Productos originales seleccionados para vos
+    </p>
+  </section>
+
+  <!-- PRODUCTOS -->
+  <section class="px-6 pb-28">
+    <div class="max-w-7xl mx-auto">
+
+      {products.length === 0 ? (
+        <p class="text-center text-neutral-400">
+          No hay productos disponibles
+        </p>
+      ) : (
+        <div
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10"
+        >
+          {products.map(product => (
+            <ProductCard product={product} />
+          ))}
+        </div>
+      )}
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-neutral-800 py-10 text-center text-xs text-neutral-500">
+    © 2025 Catálogo AM
+  </footer>
+
+</Layout>
