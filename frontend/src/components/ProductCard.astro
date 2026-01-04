@@ -22,8 +22,8 @@ const { product } = Astro.props;
       {product.name}
     </h3>
 
-    <p class="text-xs text-neutral-400 line-clamp-2">
-      {product.description}
+    <p class={`text-xs line-clamp-2 ${product.stock > 0 ? "text-neutral-400" : "text-rose-500 font-bold"}`}>
+      {product.stock > 0 ? product.stock : "Sin stock"}
     </p>
 
     <div class="flex items-center justify-between pt-3">
@@ -31,14 +31,16 @@ const { product } = Astro.props;
         ${product.price}
       </span>
 
-      <a
-        href={`https://wa.me/549XXXXXXXXXX?text=Hola! Me interesa el producto ${product.name}`}
-        target="_blank"
-        class="text-xs border border-rose-300 text-rose-300 px-4 py-1.5 rounded-full
-               hover:bg-rose-300 hover:text-neutral-950 transition"
-      >
-        Consultar
-      </a>
+    {product.stock > 0 && (
+    <a
+      href={`https://wa.me/5493571620225?text=Hola! Me interesa el producto ${product.name}`}
+      target="_blank"
+      class="text-xs border border-rose-300 text-rose-300 px-4 py-1.5 rounded-full
+           hover:bg-rose-300 hover:text-neutral-950 transition"
+    >
+      Consultar
+    </a>
+)}
     </div>
   </div>
 </article>

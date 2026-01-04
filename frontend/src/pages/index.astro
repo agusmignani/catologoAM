@@ -10,16 +10,24 @@ const products = await res.json();
 
   <!-- HEADER -->
   <header class="border-b border-neutral-800">
-    <div class="max-w-7xl mx-auto px-6 h-24 flex items-center gap-4">
-      <div class="w-12 h-12 rounded-full bg-rose-300 flex items-center justify-center">
-        <span class="text-neutral-950 font-semibold">AM</span>
-      </div>
-
-      <div>
-        <h1 class="text-lg font-medium tracking-wide">Catálogo AM</h1>
-        <p class="text-xs text-neutral-400">Maquillaje original</p>
-      </div>
+  <div class="max-w-7xl mx-auto px-6 h-24 flex items-center gap-4">
+    
+    <!-- Logo -->
+    <div class="w-12 h-12 rounded-full bg-rose-300 flex items-center justify-center overflow-hidden">
+      <img 
+        src="/images/am.png" 
+        alt="Logo AM" 
+        class="h-full w-auto"
+      />
     </div>
+
+    <!-- Título -->
+    <div>
+      <h1 class="text-lg font-medium tracking-wide">Catálogo AM</h1>
+      <p class="text-xs text-neutral-400">Maquillaje</p>
+    </div>
+
+  </div>
   </header>
 
   <!-- HERO -->
@@ -28,7 +36,7 @@ const products = await res.json();
       Belleza auténtica
     </h2>
     <p class="text-neutral-400 mt-2">
-      Productos originales seleccionados para vos
+      Productos seleccionados para vos
     </p>
   </section>
 
@@ -55,7 +63,7 @@ const products = await res.json();
 
   <!-- FOOTER -->
   <footer class="border-t border-neutral-800 py-10 text-center text-xs text-neutral-500">
-    © 2025 Catálogo AM
+    © 2026 Catálogo AM
   </footer>
 
 </Layout>
