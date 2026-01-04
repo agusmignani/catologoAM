@@ -10,25 +10,42 @@ const products = await res.json();
 
   <!-- HEADER -->
   <header class="border-b border-neutral-800">
-  <div class="max-w-7xl mx-auto px-6 h-24 flex items-center gap-4">
-    
-    <!-- Logo -->
-    <div class="w-12 h-12 rounded-full bg-rose-300 flex items-center justify-center overflow-hidden">
-      <img 
-        src="/images/am.png" 
-        alt="Logo AM" 
-        class="h-full w-auto"
-      />
+  <div class="max-w-7xl mx-auto px-6 h-24 flex items-center">
+
+    <!-- Izquierda: logo + título -->
+    <div class="flex items-center gap-4">
+      <!-- Logo -->
+      <div class="w-12 h-12 rounded-full bg-rose-300 flex items-center justify-center overflow-hidden">
+        <img 
+          src="/images/am.png" 
+          alt="Logo AM" 
+          class="h-full w-auto"
+        />
+      </div>
+
+      <!-- Título -->
+      <div>
+        <h1 class="text-lg font-medium tracking-wide">Catálogo AM</h1>
+        <p class="text-xs text-neutral-400">Maquillaje</p>
+      </div>
     </div>
 
-    <!-- Título -->
-    <div>
-      <h1 class="text-lg font-medium tracking-wide">Catálogo AM</h1>
-      <p class="text-xs text-neutral-400">Maquillaje</p>
-    </div>
+    <!-- Derecha: icono de usuario -->
+    <a 
+      href="/login" 
+      class="ml-auto w-10 h-10 rounded-full border border-rose-300 flex items-center justify-center
+             text-rose-300 hover:bg-rose-300 hover:text-neutral-950 transition"
+      title="Ingresar"
+    >
+      <!-- Icono SVG de usuario -->
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+              d="M5.121 17.804A9 9 0 1118.879 6.196 9 9 0 015.12 17.804zM15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+    </a>
 
   </div>
-  </header>
+</header>
 
   <!-- HERO -->
   <section class="py-24 text-center px-6">
