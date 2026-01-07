@@ -34,6 +34,9 @@ export default function AdminDashboard() {
           <a href="/admin/users" className="hover:text-rose-300 transition">
             Usuarios
           </a>
+          <a href="/admin/sales" className="hover:text-rose-300 transition">
+            Ventas
+          </a>
         </nav>
 
         <button

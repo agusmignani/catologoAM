@@ -7,6 +7,7 @@ export default function AdminProducts() {
 
   const [form, setForm] = useState({
     name: "",
+    cost_price: "",
     price: "",
     stock: "",
     image: null,
@@ -30,6 +31,7 @@ export default function AdminProducts() {
   const resetForm = () => {
     setForm({
       name: "",
+      cost_price: "",
       price: "",
       stock: "",
       image: null,
@@ -45,6 +47,7 @@ export default function AdminProducts() {
 
     const formData = new FormData();
     formData.append("name", form.name);
+    formData.append("cost_price", form.cost_price);
     formData.append("price", form.price);
     formData.append("stock", form.stock);
     formData.append("is_active", form.is_active);
@@ -80,6 +83,7 @@ export default function AdminProducts() {
     setEditingId(p.id);
     setForm({
       name: p.name,
+      cost_price: p.cost_price,
       price: p.price,
       stock: p.stock,
       image: null,
@@ -130,6 +134,17 @@ return (
               value={form.name}
               onChange={(e) =>
                 setForm({ ...form, name: e.target.value })
+              }
+              className="px-4 py-3 rounded-xl bg-neutral-800 border border-neutral-700 text-neutral-200 focus:outline-none focus:ring-2 focus:ring-rose-300"
+              required
+            />
+
+            <input
+              type="number"
+              placeholder="Precio de costo"
+              value={form.cost_price}
+              onChange={(e) =>
+                setForm({ ...form, cost_price: e.target.value })
               }
               className="px-4 py-3 rounded-xl bg-neutral-800 border border-neutral-700 text-neutral-200 focus:outline-none focus:ring-2 focus:ring-rose-300"
               required
@@ -230,7 +245,7 @@ return (
                     {p.name}
                   </p>
                   <p className="text-sm text-neutral-400">
-                    ${p.price} · Stock: {p.stock}
+                    Costo: ${p.cost_price} · Venta: ${p.price} · Stock: {p.stock}
                   </p>
                   {!p.is_active && (
                     <p className="text-xs text-red-400">
