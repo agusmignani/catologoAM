@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 export default function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [editingId, setEditingId] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState({
     username: "",
@@ -12,9 +13,15 @@ export default function AdminUsers() {
 
   const API = "http://127.0.0.1:8000";
 
+  const logout = () => {
+    localStorage.removeItem("token");
+    window.location.href = "/login";
+  };
+
   const loadUsers = async () => {
     const res = await fetch(`${API}/auth`);
-    setUsers(await res.json());
+    const data = await res.json();
+    setUsers(data);
   };
 
   useEffect(() => {
@@ -28,12 +35,15 @@ export default function AdminUsers() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     const fd = new FormData();
     fd.append("username", form.username);
     fd.append("is_admin", form.is_admin);
 
-    if (!editingId) fd.append("password", form.password);
+    if (!editingId) {
+      fd.append("password", form.password);
+    }
 
     const url = editingId
       ? `${API}/auth/${editingId}`
@@ -45,6 +55,7 @@ export default function AdminUsers() {
 
     resetForm();
     loadUsers();
+    setLoading(false);
   };
 
   const editUser = (u) => {
@@ -63,102 +74,165 @@ export default function AdminUsers() {
   };
 
   return (
-    <div className="min-h-screen flex justify-center py-12 px-4">
-      <div className="w-full max-w-3xl">
+    <div className="min-h-screen flex bg-neutral-950 text-neutral-200 font-sans">
 
-        <h1 className="text-2xl font-bold text-rose-300 mb-8 text-center">
-          Administración de Usuarios
-        </h1>
+      {/* 🧭 SIDEBAR */}
+      <aside className="w-64 bg-neutral-900 border-r border-neutral-800 p-6 flex flex-col fixed h-full">
+        <h2 className="text-2xl font-semibold text-rose-300 mb-8">
+          Admin Panel
+        </h2>
 
-        <div className="grid md:grid-cols-2 gap-8">
+        <nav className="flex flex-col gap-4 text-sm flex-1">
+          <a href="/admin" className="p-2 rounded hover:bg-neutral-800 hover:text-rose-300 transition">
+            Dashboard
+          </a>
+          <a href="/admin/products" className="p-2 rounded hover:bg-neutral-800 hover:text-rose-300 transition">
+            Productos
+          </a>
+          <a href="/admin/users" className="p-2 rounded bg-neutral-800 text-rose-300 font-bold">
+            Usuarios
+          </a>
+          <a href="/admin/sales" className="p-2 rounded hover:bg-neutral-800 hover:text-rose-300 transition">
+            Ventas
+          </a>
+        </nav>
 
-          {/* FORM */}
-          <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
-            <h2 className="text-lg text-rose-300 mb-4">
-              {editingId ? "Editar usuario" : "Nuevo usuario"}
-            </h2>
+        <button
+          onClick={logout}
+          className="mt-10 p-2 text-sm text-left text-red-400 hover:bg-red-500/10 rounded transition"
+        >
+          Cerrar sesión
+        </button>
+      </aside>
 
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      {/* 📊 CONTENIDO */}
+      <main className="flex-1 ml-64 p-10 overflow-y-auto">
+        <div className="max-w-5xl mx-auto">
 
-              <input
-                placeholder="Username"
-                value={form.username}
-                onChange={(e) =>
-                  setForm({ ...form, username: e.target.value })
-                }
-                className="px-4 py-3 rounded-xl bg-neutral-800 border border-neutral-700 text-neutral-200"
-                required
-              />
+          <h1 className="text-3xl font-bold text-rose-300 mb-8 text-center">
+            GESTIÓN DE USUARIOS
+          </h1>
 
-              {!editingId && (
+          <div className="grid md:grid-cols-2 gap-8 items-start">
+
+            {/* 📝 FORMULARIO */}
+            <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 shadow-lg">
+              <h2 className="text-lg font-semibold text-rose-300 mb-6 flex items-center gap-2">
+                <span className="w-2 h-2 bg-rose-300 rounded-full"></span>
+                {editingId ? "Editar usuario" : "Nuevo usuario"}
+              </h2>
+
+              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+
                 <input
-                  type="password"
-                  placeholder="Contraseña"
-                  value={form.password}
+                  placeholder="Username"
+                  value={form.username}
                   onChange={(e) =>
-                    setForm({ ...form, password: e.target.value })
+                    setForm({ ...form, username: e.target.value })
                   }
-                  className="px-4 py-3 rounded-xl bg-neutral-800 border border-neutral-700 text-neutral-200"
+                  className="px-4 py-3 rounded-xl bg-neutral-800 border border-neutral-700 text-neutral-200 focus:outline-none focus:ring-2 focus:ring-rose-300"
                   required
                 />
-              )}
 
-              <label className="flex items-center gap-2 text-sm text-neutral-300">
-                <input
-                  type="checkbox"
-                  checked={form.is_admin}
-                  onChange={(e) =>
-                    setForm({ ...form, is_admin: e.target.checked })
-                  }
-                />
-                Administrador
-              </label>
+                {!editingId && (
+                  <input
+                    type="password"
+                    placeholder="Contraseña"
+                    value={form.password}
+                    onChange={(e) =>
+                      setForm({ ...form, password: e.target.value })
+                    }
+                    className="px-4 py-3 rounded-xl bg-neutral-800 border border-neutral-700 text-neutral-200 focus:outline-none focus:ring-2 focus:ring-rose-300"
+                    required
+                  />
+                )}
 
-              <button className="py-3 rounded-full bg-rose-300 text-neutral-950 font-semibold">
-                Guardar
-              </button>
+                <label className="flex items-center gap-2 text-sm text-neutral-300">
+                  <input
+                    type="checkbox"
+                    checked={form.is_admin}
+                    onChange={(e) =>
+                      setForm({ ...form, is_admin: e.target.checked })
+                    }
+                    className="accent-rose-300"
+                  />
+                  Administrador
+                </label>
 
-            </form>
-          </div>
+                <div className="flex gap-2 pt-2">
+                  <button
+                    disabled={loading}
+                    className="flex-1 py-3 rounded-full bg-rose-300 text-neutral-950 font-semibold hover:bg-rose-400 transition"
+                  >
+                    {loading ? "Guardando..." : editingId ? "Actualizar" : "Crear"}
+                  </button>
 
-          {/* LISTA */}
-          <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6">
-            <h2 className="text-lg text-rose-300 mb-4">Usuarios</h2>
-
-            <div className="flex flex-col gap-3">
-              {users.map((u) => (
-                <div
-                  key={u.id}
-                  className="flex justify-between items-center border border-neutral-800 rounded-xl p-3"
-                >
-                  <div>
-                    <p className="font-semibold">{u.username}</p>
-                    <p className="text-xs text-neutral-400">
-                      {u.is_admin ? "Administrador" : "Usuario"}
-                    </p>
-                  </div>
-
-                  <div className="flex gap-2 text-xs">
+                  {editingId && (
                     <button
-                      onClick={() => editUser(u)}
-                      className="text-rose-300"
+                      type="button"
+                      onClick={resetForm}
+                      className="px-4 py-3 rounded-full bg-neutral-700 text-neutral-200"
                     >
-                      Editar
+                      X
                     </button>
-                    <button
-                      onClick={() => deleteUser(u.id)}
-                      className="text-red-400"
-                    >
-                      Eliminar
-                    </button>
-                  </div>
+                  )}
                 </div>
-              ))}
+
+              </form>
             </div>
 
+            {/* 👥 LISTA DE USUARIOS */}
+            <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 shadow-2xl h-fit">
+              <h2 className="text-lg font-semibold text-rose-300 mb-6 flex justify-between items-center">
+                <span>Usuarios registrados</span>
+                <span className="text-xs bg-neutral-800 px-2 py-1 rounded text-neutral-400">
+                  {users.length} usuarios
+                </span>
+              </h2>
+
+              <div
+                className="flex flex-col gap-3 overflow-y-auto pr-2"
+                style={{
+                  maxHeight: "540px",
+                  scrollbarWidth: "thin",
+                  scrollbarColor: "#262626 transparent",
+                }}
+              >
+                {users.map((u) => (
+                  <div
+                    key={u.id}
+                    className="flex justify-between items-center border border-neutral-800 rounded-xl p-3 bg-neutral-950/50 hover:border-rose-300 transition"
+                  >
+                    <div>
+                      <p className="font-bold text-neutral-100">{u.username}</p>
+                      <p className="text-xs text-neutral-400">
+                        {u.is_admin ? "Administrador" : "Usuario"}
+                      </p>
+                    </div>
+
+                    <div className="flex flex-col gap-1 text-xs font-bold uppercase text-right">
+                      <button
+                        onClick={() => editUser(u)}
+                        className="text-rose-300 hover:text-rose-100"
+                      >
+                        Editar
+                      </button>
+                      <button
+                        onClick={() => deleteUser(u.id)}
+                        className="text-red-500 hover:text-red-400"
+                      >
+                        Eliminar
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+            </div>
           </div>
         </div>
-      </div>
+      </main>
+
     </div>
   );
 }
