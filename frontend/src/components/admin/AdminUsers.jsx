@@ -76,7 +76,7 @@ export default function AdminUsers() {
   return (
     <div className="min-h-screen flex bg-neutral-950 text-neutral-200 font-sans">
 
-      {/* 🧭 SIDEBAR */}
+      {/* SIDEBAR */}
       <aside className="w-64 bg-neutral-900 border-r border-neutral-800 p-6 flex flex-col fixed h-full">
         <h2 className="text-2xl font-semibold text-rose-300 mb-8">
           Admin Panel
@@ -108,7 +108,7 @@ export default function AdminUsers() {
         </button>
       </aside>
 
-      {/* 📊 CONTENIDO */}
+      {/* CONTENIDO */}
       <main className="flex-1 ml-64 p-10 overflow-y-auto">
         <div className="max-w-5xl mx-auto">
 
@@ -118,7 +118,7 @@ export default function AdminUsers() {
 
           <div className="grid md:grid-cols-2 gap-8 items-start">
 
-            {/* 📝 FORMULARIO */}
+            {/* FORMULARIO */}
             <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 shadow-lg">
               <h2 className="text-lg font-semibold text-rose-300 mb-6 flex items-center gap-2">
                 <span className="w-2 h-2 bg-rose-300 rounded-full"></span>
@@ -184,7 +184,7 @@ export default function AdminUsers() {
               </form>
             </div>
 
-            {/* 👥 LISTA DE USUARIOS */}
+            {/* LISTA DE USUARIOS */}
             <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 shadow-2xl h-fit">
               <h2 className="text-lg font-semibold text-rose-300 mb-6 flex justify-between items-center">
                 <span>Usuarios registrados</span>

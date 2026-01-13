@@ -16,50 +16,50 @@ export default function AdminDashboard() {
     window.location.href = "/login";
   };
 
-useEffect(() => {
-  const fetchDashboardData = async () => {
-    const token = localStorage.getItem("token"); //
-    
-    if (!token) {
-      setError("No hay sesión activa");
-      setLoading(false);
-      return;
-    }
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      const token = localStorage.getItem("token"); //
 
-    try {
-      const res = await fetch(`${API}/sales/dashboard`, {
-        method: "GET",
-        headers: { 
-          "Authorization": `Bearer ${token}`, // Esto es lo que falta
-          "Content-Type": "application/json"
-        },
-      });
-
-      if (res.status === 401) {
-        logout(); // Si el token expiró, mandarlo al login
+      if (!token) {
+        setError("No hay sesión activa");
+        setLoading(false);
         return;
       }
 
-      if (!res.ok) throw new Error("Error al cargar datos");
+      try {
+        const res = await fetch(`${API}/sales/dashboard`, {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          },
+        });
 
-      const data = await res.json();
-      setStats(data);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+        if (res.status === 401) {
+          logout(); // Si el token expiró, mandarlo al login
+          return;
+        }
 
-  fetchDashboardData();
-}, []);
+        if (!res.ok) throw new Error("Error al cargar datos");
 
-  if (loading) return <div className="min-h-screen bg-neutral-950 flex items-center justify-center text-rose-300 animate-pulse font-black">CARGANDO DASHBOARD...</div>;
+        const data = await res.json();
+        setStats(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  if (loading) return <div className="min-h-screen bg-neutral-950 flex items-center justify-center text-rose-300 animate-pulse font-black">CARGANDO...</div>;
 
   if (error) {
     return (
       <div className="text-red-400 p-10 bg-neutral-950 min-h-screen flex flex-col items-center justify-center gap-4">
-        <p className="text-xl font-bold">⚠️ Error: {error}</p>
+        <p className="text-xl font-bold">Error: {error}</p>
         <button onClick={() => window.location.reload()} className="px-4 py-2 bg-neutral-800 rounded-lg text-white">Reintentar</button>
       </div>
     );
@@ -67,8 +67,8 @@ useEffect(() => {
 
   return (
     <div className="min-h-screen flex bg-neutral-950 text-neutral-200 font-sans">
-      
-      {/* 🧭 SIDEBAR */}
+
+      {/* SIDEBAR */}
       <aside className="w-64 bg-neutral-900 border-r border-neutral-800 p-6 flex flex-col fixed h-full">
         <h2 className="text-2xl font-semibold text-rose-300 mb-8 tracking-tighter">Admin Panel</h2>
         <nav className="flex flex-col gap-4 text-sm flex-1">
@@ -83,7 +83,7 @@ useEffect(() => {
         </button>
       </aside>
 
-      {/* 📊 CONTENIDO PRINCIPAL */}
+      {/*CONTENIDO PRINCIPAL */}
       <main className="flex-1 ml-64 p-10 overflow-y-auto">
         <div className="max-w-6xl mx-auto">
           <header className="mb-10 flex justify-between items-end">
@@ -92,14 +92,14 @@ useEffect(() => {
               <p className="text-rose-300/60 font-medium italic">Estadísticas de ventas y rendimiento en tiempo real</p>
             </div>
             <div className="text-right">
-                <span className="text-[10px] text-neutral-500 font-bold block uppercase">Estado del Sistema</span>
-                <span className="text-xs text-green-500 font-bold flex items-center justify-end gap-1">
-                    <span className="w-2 h-2 bg-green-500 rounded-full animate-ping"></span> ONLINE
-                </span>
+              <span className="text-[10px] text-neutral-500 font-bold block uppercase">Estado del Sistema</span>
+              <span className="text-xs text-green-500 font-bold flex items-center justify-end gap-1">
+                <span className="w-2 h-2 bg-green-500 rounded-full animate-ping"></span> ONLINE
+              </span>
             </div>
           </header>
 
-          {/* ⚡ CARDS DE MÉTRICAS */}
+          {/* CARDS DE MÉTRICAS */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
             <div className="bg-neutral-900 border border-neutral-800 p-6 rounded-3xl shadow-xl">
               <p className="text-xs font-bold text-neutral-500 uppercase mb-1">Ventas Totales</p>
@@ -120,9 +120,9 @@ useEffect(() => {
             </div>
           </div>
 
-          {/* 📈 GRÁFICOS */}
+          {/* GRÁFICOS */}
           <div className="grid lg:grid-cols-2 gap-8">
-            
+
             {/* Gráfico de Línea: Ventas por Día */}
             <div className="bg-neutral-900 border border-neutral-800 p-6 rounded-3xl shadow-lg">
               <h2 className="text-lg font-bold mb-6 flex items-center gap-2">
@@ -135,7 +135,7 @@ useEffect(() => {
                     <CartesianGrid strokeDasharray="3 3" stroke="#262626" vertical={false} />
                     <XAxis dataKey="date" stroke="#525252" fontSize={10} tickLine={false} axisLine={false} />
                     <YAxis stroke="#525252" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} />
-                    <Tooltip 
+                    <Tooltip
                       contentStyle={{ backgroundColor: '#171717', border: '1px solid #404040', borderRadius: '12px' }}
                       itemStyle={{ color: '#fda4af', fontWeight: 'bold' }}
                     />
@@ -156,7 +156,7 @@ useEffect(() => {
                   <BarChart data={stats.top_products} layout="vertical">
                     <XAxis type="number" hide />
                     <YAxis dataKey="product" type="category" stroke="#a3a3a3" fontSize={10} width={80} axisLine={false} tickLine={false} />
-                    <Tooltip cursor={{fill: '#262626'}} contentStyle={{ backgroundColor: '#171717', border: 'none', borderRadius: '8px' }} />
+                    <Tooltip cursor={{ fill: '#262626' }} contentStyle={{ backgroundColor: '#171717', border: 'none', borderRadius: '8px' }} />
                     <Bar dataKey="quantity" radius={[0, 10, 10, 0]} barSize={20}>
                       {stats.top_products.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={index === 0 ? '#fda4af' : '#404040'} />

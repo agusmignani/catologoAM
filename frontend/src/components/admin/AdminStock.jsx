@@ -36,10 +36,14 @@ export default function AdminStock() {
     }
   };
 
+  const logout = () => {
+    localStorage.removeItem("token");
+    window.location.href = "/login";
+  };
   return (
     <div className="flex min-h-screen bg-neutral-950 text-neutral-200">
       
-      {/* 🧭 SIDEBAR - Forzado con clases explicitas */}
+      {/* SIDEBAR */}
       <aside className="fixed inset-y-0 left-0 w-64 border-r border-neutral-800 bg-neutral-900 p-6 flex flex-col z-50">
         <h2 className="mb-8 text-2xl font-bold text-rose-300 tracking-tight">Admin Panel</h2>
         <nav className="flex flex-col gap-4 text-sm flex-1">
@@ -59,9 +63,12 @@ export default function AdminStock() {
             Stock
           </a>
         </nav>
+        <button onClick={logout} className="mt-10 p-2 text-sm text-left text-red-400 hover:bg-red-500/10 rounded transition font-medium">
+          Cerrar sesión
+        </button>
       </aside>
 
-      {/* 📊 MAIN CONTENT */}
+      {/* MAIN CONTENT */}
       <main className="pl-64 flex-1 w-full">
         <div className="p-10 max-w-6xl mx-auto">
           <h1 className="mb-10 text-3xl font-black uppercase tracking-widest text-rose-300 text-center">

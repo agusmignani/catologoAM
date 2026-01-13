@@ -30,11 +30,11 @@ export default function LoginForm() {
         return;
       }
 
-      // 👉 guardar token y rol
+      // guarda token y rol
       localStorage.setItem("token", data.access_token);
       localStorage.setItem("is_admin", data.is_admin);
 
-      // 👉 redirección según rol
+      // redirección según rol
       if (data.is_admin === 1 || data.is_admin === true) {
         window.location.href = "/admin";
       } else {

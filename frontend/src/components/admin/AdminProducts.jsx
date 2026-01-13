@@ -8,7 +8,7 @@ export default function AdminProducts() {
 
   const [form, setForm] = useState({
     name: "",
-    cost_price: "",
+    description: "",
     price: "",
     stock: "",
     is_active: true,
@@ -17,9 +17,6 @@ export default function AdminProducts() {
 
   const API = "http://127.0.0.1:8000";
 
-  /* =========================
-      AUTH & LOAD
-  ========================= */
   const logout = () => {
     localStorage.removeItem("token");
     window.location.href = "/login";
@@ -39,13 +36,10 @@ export default function AdminProducts() {
     loadProducts();
   }, []);
 
-  /* =========================
-      HANDLERS
-  ========================= */
   const resetForm = () => {
     setForm({
       name: "",
-      cost_price: "",
+      description: "",
       price: "",
       stock: "",
       is_active: true,
@@ -61,7 +55,7 @@ export default function AdminProducts() {
 
     const formData = new FormData();
     formData.append("name", form.name);
-    formData.append("cost_price", parseFloat(form.cost_price));
+    formData.append("description", form.description);
     formData.append("price", parseFloat(form.price));
     formData.append("stock", parseInt(form.stock));
     formData.append("is_active", form.is_active);
@@ -98,7 +92,7 @@ export default function AdminProducts() {
     setEditingId(p.id);
     setForm({
       name: p.name,
-      cost_price: p.cost_price || "",
+      description: p.description,
       price: p.price,
       stock: p.stock,
       is_active: p.is_active,
@@ -128,7 +122,7 @@ export default function AdminProducts() {
   return (
     <div className="min-h-screen flex bg-neutral-950 text-neutral-200 font-sans">
       
-      {/* 🧭 SIDEBAR - Mantenido igual */}
+      {/* SIDEBAR*/}
       <aside className="w-64 bg-neutral-900 border-r border-neutral-800 p-6 flex flex-col fixed h-full">
         <h2 className="text-2xl font-semibold text-rose-300 mb-8">Admin Panel</h2>
         <nav className="flex flex-col gap-4 text-sm flex-1">
@@ -143,7 +137,7 @@ export default function AdminProducts() {
         </button>
       </aside>
 
-      {/* 📊 MAIN CONTENT */}
+      {/* MAIN CONTENT */}
       <main className="flex-1 ml-64 p-10 overflow-y-auto">
         <div className="max-w-6xl mx-auto">
           <h1 className="mb-10 text-3xl font-black uppercase tracking-widest text-rose-300 text-center">
@@ -152,7 +146,7 @@ export default function AdminProducts() {
 
           <div className="grid md:grid-cols-2 gap-8 items-start">
             
-            {/* 📝 FORMULARIO */}
+            {/* FORMULARIO */}
             <section className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 shadow-lg">
               <h2 className="text-lg font-semibold text-rose-300 mb-6 flex items-center gap-2 italic">
                 <span className="w-2 h-2 bg-rose-300 rounded-full"></span>
@@ -167,20 +161,7 @@ export default function AdminProducts() {
                   className="px-4 py-3 rounded-xl bg-neutral-800 border border-neutral-700 text-neutral-200 focus:outline-none focus:ring-2 focus:ring-rose-300 transition-all"
                   required
                 />
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-1">
-                    <label className="text-[10px] text-neutral-500 font-bold uppercase ml-2">Costo</label>
-                    <input
-                      type="number"
-                      step="0.01"
-                      placeholder="$ 0.00"
-                      value={form.cost_price}
-                      onChange={(e) => setForm({ ...form, cost_price: e.target.value })}
-                      className="px-4 py-3 rounded-xl bg-neutral-800 border border-neutral-700 text-neutral-200 focus:ring-2 focus:ring-rose-300 outline-none"
-                      required
-                    />
-                  </div>
+                
                   <div className="flex flex-col gap-1">
                     <label className="text-[10px] text-rose-300/50 font-bold uppercase ml-2">Venta</label>
                     <input
@@ -193,17 +174,27 @@ export default function AdminProducts() {
                       required
                     />
                   </div>
+                
+                <div className="flex flex-col gap-1">
+                  <label className="text-[10px] text-neutral-500 font-bold uppercase ml-2">Descripción</label>
+                  <textarea
+                    placeholder="Descripción del producto"
+                    value={form.description}
+                    onChange={(e) => setForm({ ...form, description: e.target.value })}
+                    className="px-4 py-3 rounded-xl bg-neutral-800 border border-neutral-700 outline-none focus:ring-2 focus:ring-rose-300"
+                    rows={3}
+                    required
+                  />
                 </div>
 
                 <div className="flex flex-col gap-1">
                   <label className="text-[10px] text-neutral-500 font-bold uppercase ml-2">Stock Inicial</label>
                   <input
                     type="number"
-                    placeholder="Unidades"
+                    placeholder="Unidades (Cargar 0)"
                     value={form.stock}
                     onChange={(e) => setForm({ ...form, stock: e.target.value })}
                     className="px-4 py-3 rounded-xl bg-neutral-800 border border-neutral-700 outline-none focus:ring-2 focus:ring-rose-300"
-                    required
                   />
                 </div>
 
@@ -247,7 +238,7 @@ export default function AdminProducts() {
               </form>
             </section>
 
-            {/* 📦 LISTA DE PRODUCTOS */}
+            {/* LISTA DE PRODUCTOS */}
           <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 shadow-2xl h-fit">
             <h2 className="text-lg font-semibold text-rose-300 mb-6 flex justify-between items-center">
               <span>Inventario Actual</span>

@@ -43,7 +43,7 @@ export default function RegisterForm() {
     return (
       <div className="flex flex-col gap-4 text-center">
         <p className="text-green-400 font-medium">
-          ✅ Usuario registrado correctamente
+          Usuario registrado correctamente
         </p>
 
         <p className="text-sm text-neutral-400">

@@ -17,9 +17,6 @@ export default function AdminSales() {
 
   const [token, setToken] = useState(null);
 
-  /* =========================
-      AUTH & INITIAL LOAD
-  ========================= */
   useEffect(() => {
     if (typeof window !== "undefined") {
       const t = localStorage.getItem("token");
@@ -59,9 +56,6 @@ export default function AdminSales() {
     }
   }, [productId]);
 
-  /* =========================
-      CART LOGIC
-  ========================= */
   const addToCart = () => {
     if (!selectedProduct || quantity <= 0) return;
 
@@ -77,7 +71,7 @@ export default function AdminSales() {
         name: selectedProduct.name,
         quantity: Number(quantity),
         unit_price: currentPrice,
-        // IMPORTANTE: Enviamos el precio de costo actual del producto
+        // IMPORTANTE: Envia el precio de costo actual del producto
         cost_price: selectedProduct.cost_price || 0, 
         subtotal: itemSubtotal,
         sale_type: saleType,
@@ -100,9 +94,6 @@ export default function AdminSales() {
   // El total de la venta es la suma de los subtotales del carrito
   const totalVenta = cart.reduce((acc, item) => acc + item.subtotal, 0);
 
-  /* =========================
-      SUBMIT TO BACKEND
-  ========================= */
   const submitSale = async () => {
     const currentToken = localStorage.getItem("token");
     if (!currentToken || cart.length === 0) return;
@@ -115,14 +106,14 @@ export default function AdminSales() {
           "Authorization": `Bearer ${currentToken}`,
         },
         body: JSON.stringify({
-          total: totalVenta, // Coincide con Column Float en Sale
-          payment_method: paymentMethod, // Coincide con Column String en Sale
+          total: totalVenta, 
+          payment_method: paymentMethod, 
           items: cart.map(i => ({
             product_id: i.product_id,
             quantity: i.quantity,
             unit_price: i.unit_price,
-            cost_price: i.cost_price, // Requerido por tu nueva tabla SaleDetail
-            subtotal: i.subtotal,     // Requerido por tu nueva tabla SaleDetail
+            cost_price: i.cost_price, 
+            subtotal: i.subtotal,     
             sale_type: i.sale_type,
             has_packaging: i.has_packaging,
             packaging_price: i.packaging_price,
@@ -161,7 +152,7 @@ export default function AdminSales() {
   return (
     <div className="min-h-screen flex bg-neutral-950 text-neutral-200 font-sans">
       
-      {/* SIDEBAR (Igual al anterior) */}
+      {/* SIDEBAR */}
       <aside className="w-64 bg-neutral-900 border-r border-neutral-800 p-6 flex flex-col fixed h-full">
         <h2 className="text-2xl font-semibold text-rose-300 mb-8">Admin Panel</h2>
         <nav className="flex flex-col gap-4 text-sm flex-1">
