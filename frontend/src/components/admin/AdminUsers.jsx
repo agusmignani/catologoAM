@@ -83,17 +83,20 @@ export default function AdminUsers() {
         </h2>
 
         <nav className="flex flex-col gap-4 text-sm flex-1">
-          <a href="/admin" className="p-2 rounded hover:bg-neutral-800 hover:text-rose-300 transition">
+          <a href="/admin" className="p-2 rounded hover:bg-neutral-800">
             Dashboard
           </a>
-          <a href="/admin/products" className="p-2 rounded hover:bg-neutral-800 hover:text-rose-300 transition">
+          <a href="/admin/products" className="p-2 rounded hover:bg-neutral-800">
             Productos
           </a>
-          <a href="/admin/users" className="p-2 rounded bg-neutral-800 text-rose-300 font-bold">
+          <a href="/admin/users" className="p-2 rounded hover:bg-neutral-800">
             Usuarios
           </a>
-          <a href="/admin/sales" className="p-2 rounded hover:bg-neutral-800 hover:text-rose-300 transition">
+          <a href="/admin/sales" className="p-2 rounded hover:bg-neutral-800">
             Ventas
+          </a>
+          <a href="/admin/stock" className="p-2 rounded hover:bg-neutral-800">
+            Stock
           </a>
         </nav>
 
@@ -109,8 +112,8 @@ export default function AdminUsers() {
       <main className="flex-1 ml-64 p-10 overflow-y-auto">
         <div className="max-w-5xl mx-auto">
 
-          <h1 className="text-3xl font-bold text-rose-300 mb-8 text-center">
-            GESTIÓN DE USUARIOS
+          <h1 className="mb-10 text-3xl font-black uppercase tracking-widest text-rose-300 text-center">
+            USUARIOS
           </h1>
 
           <div className="grid md:grid-cols-2 gap-8 items-start">

@@ -11,39 +11,45 @@ export default function AdminProducts() {
     cost_price: "",
     price: "",
     stock: "",
-    initial_stock: "", 
-    order_number: "", 
-    image: null,
     is_active: true,
+    image: null,
   });
 
   const API = "http://127.0.0.1:8000";
 
+  /* =========================
+      AUTH & LOAD
+  ========================= */
   const logout = () => {
     localStorage.removeItem("token");
-    window.location.href = "/login"; 
+    window.location.href = "/login";
   };
 
   const loadProducts = async () => {
-    const res = await fetch(`${API}/products`);
-    const data = await res.json();
-    setProducts(data);
+    try {
+      const res = await fetch(`${API}/products`);
+      const data = await res.json();
+      setProducts(data);
+    } catch (error) {
+      console.error("Error al cargar productos:", error);
+    }
   };
 
   useEffect(() => {
     loadProducts();
   }, []);
 
+  /* =========================
+      HANDLERS
+  ========================= */
   const resetForm = () => {
     setForm({
       name: "",
       cost_price: "",
       price: "",
       stock: "",
-      initial_stock: "",
-      order_number: "",
-      image: null,
       is_active: true,
+      image: null,
     });
     setEditingId(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
@@ -55,11 +61,9 @@ export default function AdminProducts() {
 
     const formData = new FormData();
     formData.append("name", form.name);
-    formData.append("cost_price", form.cost_price);
-    formData.append("price", form.price);
-    formData.append("stock", form.stock);
-    formData.append("initial_stock", form.initial_stock);
-    formData.append("order_number", form.order_number);
+    formData.append("cost_price", parseFloat(form.cost_price));
+    formData.append("price", parseFloat(form.price));
+    formData.append("stock", parseInt(form.stock));
     formData.append("is_active", form.is_active);
 
     if (form.image) {
@@ -68,203 +72,180 @@ export default function AdminProducts() {
 
     const url = editingId ? `${API}/products/${editingId}` : `${API}/products`;
     const method = editingId ? "PUT" : "POST";
+    const token = localStorage.getItem("token");
 
-    const res = await fetch(url, {
-      method,
-      body: formData,
-    });
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
 
-    if (!res.ok) {
-      alert("Error al guardar producto");
+      if (res.ok) {
+        await loadProducts();
+        resetForm();
+      } else {
+        alert("Error al procesar la solicitud");
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
       setLoading(false);
-      return;
     }
-
-    await loadProducts();
-    resetForm();
-    setLoading(false);
   };
 
   const editProduct = (p) => {
     setEditingId(p.id);
     setForm({
       name: p.name,
-      cost_price: p.cost_price,
+      cost_price: p.cost_price || "",
       price: p.price,
       stock: p.stock,
-      initial_stock: p.initial_stock || p.stock,
-      order_number: p.order_number || "",
-      image: null,
       is_active: p.is_active,
+      image: null,
     });
   };
 
-  const deleteProduct = async (id) => {
-    if (!confirm("¿Eliminar producto?")) return;
-    await fetch(`${API}/products/${id}`, { method: "DELETE" });
+  const toggleActive = async (p) => {
+    const token = localStorage.getItem("token");
+    await fetch(`${API}/products/${p.id}/toggle`, { 
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}` }
+    });
     loadProducts();
   };
 
-  const toggleActive = async (p) => {
-    await fetch(`${API}/products/${p.id}/toggle`, { method: "PATCH" });
+  const deleteProduct = async (id) => {
+    if (!confirm("¿Eliminar producto permanentemente?")) return;
+    const token = localStorage.getItem("token");
+    await fetch(`${API}/products/${id}`, { 
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` }
+    });
     loadProducts();
   };
 
   return (
     <div className="min-h-screen flex bg-neutral-950 text-neutral-200 font-sans">
-
-      {/* 🧭 SIDEBAR (Copiado de tu Dashboard) */}
+      
+      {/* 🧭 SIDEBAR - Mantenido igual */}
       <aside className="w-64 bg-neutral-900 border-r border-neutral-800 p-6 flex flex-col fixed h-full">
-        <h2 className="text-2xl font-semibold text-rose-300 mb-8">
-          Admin Panel
-        </h2>
-
+        <h2 className="text-2xl font-semibold text-rose-300 mb-8">Admin Panel</h2>
         <nav className="flex flex-col gap-4 text-sm flex-1">
-          <a href="/admin" className="p-2 rounded hover:bg-neutral-800 hover:text-rose-300 transition">
-            Dashboard
-          </a>
-          <a href="/admin/products" className="p-2 rounded bg-neutral-800 text-rose-300 transition font-bold">
-            Productos
-          </a>
-          <a href="/admin/users" className="p-2 rounded hover:bg-neutral-800 hover:text-rose-300 transition">
-            Usuarios
-          </a>
-          <a href="/admin/sales" className="p-2 rounded hover:bg-neutral-800 hover:text-rose-300 transition">
-            Ventas
-          </a>
+          <a href="/admin" className="p-2 rounded hover:bg-neutral-800">Dashboard</a>
+          <a href="/admin/products" className="p-2 rounded bg-neutral-800 text-rose-300 font-bold">Productos</a>
+          <a href="/admin/users" className="p-2 rounded hover:bg-neutral-800">Usuarios</a>
+          <a href="/admin/sales" className="p-2 rounded hover:bg-neutral-800">Ventas</a>
+          <a href="/admin/stock" className="p-2 rounded hover:bg-neutral-800">Stock</a>
         </nav>
-
-        <button
-          onClick={logout}
-          className="mt-10 p-2 text-sm text-left text-red-400 hover:bg-red-500/10 rounded transition"
-        >
+        <button onClick={logout} className="mt-10 p-2 text-sm text-left text-red-400 hover:bg-red-500/10 rounded transition font-medium">
           Cerrar sesión
         </button>
       </aside>
 
-      {/* 📊 CONTENIDO PRINCIPAL */}
+      {/* 📊 MAIN CONTENT */}
       <main className="flex-1 ml-64 p-10 overflow-y-auto">
-        <div className="max-w-5xl mx-auto">
-          
-          <h1 className="text-3xl font-bold text-rose-300 mb-8 text-center">
-            GESTIÓN DE PRODUCTOS
+        <div className="max-w-6xl mx-auto">
+          <h1 className="mb-10 text-3xl font-black uppercase tracking-widest text-rose-300 text-center">
+            Gestión de Productos
           </h1>
 
           <div className="grid md:grid-cols-2 gap-8 items-start">
-
+            
             {/* 📝 FORMULARIO */}
-            <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 shadow-lg">
-              <h2 className="text-lg font-semibold text-rose-300 mb-6 flex items-center gap-2">
+            <section className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 shadow-lg">
+              <h2 className="text-lg font-semibold text-rose-300 mb-6 flex items-center gap-2 italic">
                 <span className="w-2 h-2 bg-rose-300 rounded-full"></span>
-                  {editingId ? "Editar producto" : "Nuevo ingreso de producto"}
+                {editingId ? "Actualizar Datos" : "Nuevo Producto"}
               </h2>
 
               <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                 <input
-                  placeholder="Nombre"
+                  placeholder="Nombre del producto"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="px-4 py-3 rounded-xl bg-neutral-800 border border-neutral-700 text-neutral-200 focus:outline-none focus:ring-2 focus:ring-rose-300"
+                  className="px-4 py-3 rounded-xl bg-neutral-800 border border-neutral-700 text-neutral-200 focus:outline-none focus:ring-2 focus:ring-rose-300 transition-all"
                   required
                 />
 
                 <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[10px] text-neutral-500 font-bold uppercase ml-2">Costo</label>
                     <input
                       type="number"
-                      placeholder="Precio de costo"
+                      step="0.01"
+                      placeholder="$ 0.00"
                       value={form.cost_price}
                       onChange={(e) => setForm({ ...form, cost_price: e.target.value })}
-                      className="px-4 py-3 rounded-xl bg-neutral-800 border border-neutral-700 text-neutral-200 focus:outline-none focus:ring-2 focus:ring-rose-300"
+                      className="px-4 py-3 rounded-xl bg-neutral-800 border border-neutral-700 text-neutral-200 focus:ring-2 focus:ring-rose-300 outline-none"
                       required
                     />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[10px] text-rose-300/50 font-bold uppercase ml-2">Venta</label>
                     <input
                       type="number"
-                      placeholder="Precio venta"
+                      step="0.01"
+                      placeholder="$ 0.00"
                       value={form.price}
                       onChange={(e) => setForm({ ...form, price: e.target.value })}
-                      className="px-4 py-3 rounded-xl bg-neutral-800 border border-neutral-700 text-neutral-200 focus:outline-none focus:ring-2 focus:ring-rose-300"
+                      className="px-4 py-3 rounded-xl bg-neutral-800 border border-rose-300/20 text-rose-100 focus:ring-2 focus:ring-rose-300 outline-none"
                       required
                     />
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                    <input
-                      type="number"
-                      placeholder="Stock Actual"
-                      value={form.stock}
-                      onChange={(e) => setForm({ ...form, stock: e.target.value })}
-                      className="px-4 py-3 rounded-xl bg-neutral-800 border border-neutral-700 text-neutral-200 focus:outline-none focus:ring-2 focus:ring-rose-300"
-                      required
-                    />
-                    <input
-                      type="number"
-                      placeholder="Stock Ingresado"
-                      value={form.initial_stock}
-                      onChange={(e) => setForm({ ...form, initial_stock: e.target.value })}
-                      className="px-4 py-3 rounded-xl bg-neutral-800 border border-neutral-700 text-rose-200 font-bold focus:outline-none focus:ring-2 focus:ring-rose-300"
-                      required
-                    />
+                <div className="flex flex-col gap-1">
+                  <label className="text-[10px] text-neutral-500 font-bold uppercase ml-2">Stock Inicial</label>
+                  <input
+                    type="number"
+                    placeholder="Unidades"
+                    value={form.stock}
+                    onChange={(e) => setForm({ ...form, stock: e.target.value })}
+                    className="px-4 py-3 rounded-xl bg-neutral-800 border border-neutral-700 outline-none focus:ring-2 focus:ring-rose-300"
+                    required
+                  />
                 </div>
 
-                <input
-                  placeholder="Número de pedido"
-                  value={form.order_number}
-                  onChange={(e) => setForm({ ...form, order_number: e.target.value })}
-                  className="px-4 py-3 rounded-xl bg-neutral-800 border border-neutral-700 text-neutral-200 focus:outline-none focus:ring-2 focus:ring-rose-300"
-                />
-
-                {/* BOTÓN DE IMAGEN ESTÉTICO */}
-                <div className="relative">
+                <div className="relative group">
                   <input
                     type="file"
                     ref={fileInputRef}
                     accept="image/*"
                     onChange={(e) => setForm({ ...form, image: e.target.files[0] })}
                     className="hidden"
-                    id="image-upload"
+                    id="product-image"
                   />
                   <label
-                    htmlFor="image-upload"
-                    className="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl bg-neutral-700 border-2 border-dashed border-neutral-500 text-neutral-300 cursor-pointer hover:bg-neutral-600 hover:border-rose-300 transition-all"
+                    htmlFor="product-image"
+                    className="flex flex-col items-center justify-center gap-2 w-full p-6 rounded-xl bg-neutral-950 border-2 border-dashed border-neutral-800 group-hover:border-rose-300 transition-all cursor-pointer"
                   >
-                    <span className="text-sm truncate">
-                      {form.image ? form.image.name : "Subir imagen"}
+                    <span className="text-2xl">📷</span>
+                    <span className="text-xs text-neutral-400 font-medium">
+                      {form.image ? form.image.name : "Seleccionar Imagen del Producto"}
                     </span>
                   </label>
                 </div>
 
-                {editingId && (
-                  <label className="flex items-center gap-2 text-sm text-neutral-300">
-                    <input
-                      type="checkbox"
-                      checked={form.is_active}
-                      onChange={(e) => setForm({ ...form, is_active: e.target.checked })}
-                      className="accent-rose-300"
-                    />
-                    Producto activo
-                  </label>
-                )}
-
-                <div className="flex gap-2 pt-2">
+                <div className="flex gap-3 mt-4">
                   <button
                     disabled={loading}
-                    className="flex-1 py-3 rounded-full bg-rose-300 text-neutral-950 font-semibold hover:bg-rose-400 transition"
+                    className="flex-1 py-3 rounded-full bg-rose-300 text-neutral-950 font-black uppercase tracking-widest hover:bg-rose-400 transition shadow-lg shadow-rose-300/10 disabled:opacity-50"
                   >
-                    {loading ? "Guardando..." : editingId ? "Actualizar" : "Crear"}
+                    {loading ? "PROCESANDO..." : editingId ? "GUARDAR CAMBIOS" : "CREAR PRODUCTO"}
                   </button>
-
                   {editingId && (
                     <button
                       type="button"
                       onClick={resetForm}
-                      className="px-4 py-3 rounded-full bg-neutral-700 text-neutral-200 transition"
+                      className="px-6 rounded-full bg-neutral-800 text-neutral-400 hover:text-white transition"
                     >
-                      X
+                      ✕
                     </button>
                   )}
                 </div>
               </form>
-            </div>
+            </section>
 
             {/* 📦 LISTA DE PRODUCTOS */}
           <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 shadow-2xl h-fit">
@@ -301,7 +282,6 @@ export default function AdminProducts() {
                       <span>Venta: <b className="text-rose-200">${p.price}</b></span>
                     </div>
                     <div className="text-[10px] mt-1 flex gap-2 uppercase font-bold">
-                      <span className="text-neutral-500">Total Ingreso: {p.initial_stock || 0}</span>
                       <span className={p.stock < 5 ? "text-rose-400" : "text-green-500"}>
                         Disponible: {p.stock}
                       </span>
