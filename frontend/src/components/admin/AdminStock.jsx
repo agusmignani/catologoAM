@@ -11,8 +11,14 @@ export default function AdminStock() {
   const [token, setToken] = useState(null);
 
   useEffect(() => {
-    const t = localStorage.getItem("token");
-    if (t) setToken(t);
+    if (typeof window !== "undefined") {
+      const t = localStorage.getItem("token");
+      if (!t) {
+        window.location.href = "/login";
+      } else {
+        setToken(t);
+      }
+    }
   }, []);
 
   useEffect(() => {
@@ -38,6 +44,10 @@ export default function AdminStock() {
 
   const logout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("is_admin");
+
+    document.cookie = "auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax";
+
     window.location.href = "/login";
   };
   return (

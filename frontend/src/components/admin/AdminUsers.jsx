@@ -4,6 +4,7 @@ export default function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [token, setToken] = useState(null);
 
   const [form, setForm] = useState({
     username: "",
@@ -13,8 +14,23 @@ export default function AdminUsers() {
 
   const API = "http://127.0.0.1:8000";
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const t = localStorage.getItem("token");
+      if (!t) {
+        window.location.href = "/login";
+      } else {
+        setToken(t);
+      }
+    }
+  }, []);
+
   const logout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("is_admin");
+
+    document.cookie = "auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax";
+
     window.location.href = "/login";
   };
 

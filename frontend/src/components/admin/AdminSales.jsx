@@ -72,7 +72,7 @@ export default function AdminSales() {
         quantity: Number(quantity),
         unit_price: currentPrice,
         // IMPORTANTE: Envia el precio de costo actual del producto
-        cost_price: selectedProduct.cost_price || 0, 
+        cost_price: selectedProduct.cost_price || 0,
         subtotal: itemSubtotal,
         sale_type: saleType,
         has_packaging: hasPackaging,
@@ -106,14 +106,14 @@ export default function AdminSales() {
           "Authorization": `Bearer ${currentToken}`,
         },
         body: JSON.stringify({
-          total: totalVenta, 
-          payment_method: paymentMethod, 
+          total: totalVenta,
+          payment_method: paymentMethod,
           items: cart.map(i => ({
             product_id: i.product_id,
             quantity: i.quantity,
             unit_price: i.unit_price,
-            cost_price: i.cost_price, 
-            subtotal: i.subtotal,     
+            cost_price: i.cost_price,
+            subtotal: i.subtotal,
             sale_type: i.sale_type,
             has_packaging: i.has_packaging,
             packaging_price: i.packaging_price,
@@ -146,12 +146,16 @@ export default function AdminSales() {
 
   const logout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("is_admin");
+
+    document.cookie = "auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax";
+
     window.location.href = "/login";
   };
 
   return (
     <div className="min-h-screen flex bg-neutral-950 text-neutral-200 font-sans">
-      
+
       {/* SIDEBAR */}
       <aside className="w-64 bg-neutral-900 border-r border-neutral-800 p-6 flex flex-col fixed h-full">
         <h2 className="text-2xl font-semibold text-rose-300 mb-8">Admin Panel</h2>
@@ -182,7 +186,7 @@ export default function AdminSales() {
           <h1 className="mb-10 text-3xl font-black uppercase tracking-widest text-rose-300 text-center">Ventas</h1>
 
           <div className="grid md:grid-cols-2 gap-8 items-start">
-            
+
             {/* FORMULARIO */}
             <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 shadow-lg">
               <h2 className="text-lg font-semibold text-rose-300 mb-6 flex items-center gap-2">
@@ -296,8 +300,8 @@ export default function AdminSales() {
                     </div>
 
                     <div className="flex justify-between items-center pt-2">
-                       <span className="text-[9px] text-neutral-600 font-bold uppercase">Monto Total</span>
-                       <span className="text-lg font-black text-rose-300">${s.total}</span>
+                      <span className="text-[9px] text-neutral-600 font-bold uppercase">Monto Total</span>
+                      <span className="text-lg font-black text-rose-300">${s.total}</span>
                     </div>
                   </div>
                 ))}

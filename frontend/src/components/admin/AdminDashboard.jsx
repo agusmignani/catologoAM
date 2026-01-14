@@ -12,7 +12,15 @@ export default function AdminDashboard() {
   const [error, setError] = useState(null);
 
   const logout = () => {
+    // 1. Borramos el token del localStorage (para React)
     localStorage.removeItem("token");
+    localStorage.removeItem("is_admin");
+
+    // 2. Borramos la COOKIE (para el Middleware de Astro)
+    // Ponemos una fecha pasada para que el navegador la elimine inmediatamente
+    document.cookie = "auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax";
+
+    // 3. Redirigimos
     window.location.href = "/login";
   };
 
