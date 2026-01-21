@@ -1,47 +1,32 @@
 # ======================
-# FRONTEND (ASTRO / NODE)
+# PYTHON / FASTAPI
 # ======================
-
-# build output
-dist/
-frontend/dist/
-
-# generated types
-.astro/
-
-# dependencies
-node_modules/
-frontend/node_modules/
-
-# logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-
-# environment variables
-.env
-.env.production
-
-# ======================
-# BACKEND (PYTHON / FASTAPI)
-# ======================
-
+venv/
 backend/venv/
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
+.env
+
+# ======================
+# NODE / ASTRO
+# ======================
+node_modules/
+frontend/node_modules/
+dist/
+frontend/dist/
+.astro/
+
+# ======================
+# LOGS
+# ======================
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
 # ======================
 # OS / IDE
 # ======================
-
-# macOS
 .DS_Store
-
-# Windows
 Thumbs.db
-
-# JetBrains
 .idea/
+.vscode/

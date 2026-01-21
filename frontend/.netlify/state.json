@@ -1,0 +1,20 @@
+{
+	"geolocation": {
+		"data": {
+			"city": "Río Tercero",
+			"country": {
+				"code": "AR",
+				"name": "Argentina"
+			},
+			"subdivision": {
+				"code": "X",
+				"name": "Cordoba"
+			},
+			"timezone": "America/Argentina/Cordoba",
+			"latitude": -32.1819,
+			"longitude": -64.0997,
+			"postalCode": "5850"
+		},
+		"timestamp": 1768343165306
+	}
+}
