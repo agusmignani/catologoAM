@@ -7,11 +7,9 @@ class ProductBase(BaseModel):
     description: Optional[str] = None
     price: float
     stock: int
-    image_url: Optional[str] = None
     is_active: bool = True
+    image_url: Optional[str] = None
 
-class ProductCreate(ProductBase):
-    pass
 
 class ProductResponse(ProductBase):
     id: int
