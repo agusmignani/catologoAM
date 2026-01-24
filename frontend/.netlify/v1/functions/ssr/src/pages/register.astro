@@ -1,0 +1,23 @@
+---
+import Layout from "../layouts/Layout.astro";
+import RegisterForm from "../components/RegisterForm.jsx";
+---
+
+<Layout>
+  <section class="flex justify-center items-center min-h-screen bg-neutral-950 px-4">
+    <div class="w-full max-w-md bg-neutral-900 border border-neutral-800 rounded-2xl p-8 shadow-lg">
+      <h2 class="text-3xl font-semibold text-rose-300 text-center mb-6">
+        Crear cuenta
+      </h2>
+
+      <RegisterForm client:load />
+
+      <p class="text-xs text-neutral-400 text-center mt-4">
+        ¿Ya tenés cuenta?
+        <a href="/register" class="text-rose-300 hover:underline">
+          Inicia Sesión
+        </a>
+      </p>
+    </div>
+  </section>
+</Layout>
